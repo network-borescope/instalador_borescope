@@ -1,0 +1,117 @@
+{
+    "metadata": {
+        "version": "1.0",
+        "caption": "POP-DF",
+        "geo.anchors": [
+            { "lat":0, "lon":0, "id":"POP-AC" }
+        ]
+    },
+	
+	
+	"const": {
+		"media": "avg",
+		"contagem": "hc"
+	},
+
+    "registry": {
+        "seconds/format": "yyyy-mm-dd hh:nn:ss",
+        "seconds/origin": "1970-01-01 00:00:01",
+        "seconds/what": "e",
+        "geo/length": "25"
+    },
+
+    "pops": {
+        "caption": "POPs ",
+        "items": [{ "id": "df", "cod": 1, "caption": "Distrito Federal", "sub": "clientes_df" }]
+    },
+
+	"services": {
+		"1": "WEB",
+		"2": "SMTP",
+		"3": "POP3",
+		"4": "IMAP4",
+		"5": "FTP",
+		"6": "SSH",
+		"7": "DNS",
+		"9": "OTHERS"
+	},
+	
+    "record": {
+        "fields": [
+            { "id":"seconds", "type": "int" },
+            { "id":"lat", "type": "double" },
+            { "id":"lon", "type": "double" },
+            { "id":"pop", "type": "int"},
+            { "id":"cliente", "type": "int"},
+            { "id":"ttl", "type": "int" },
+            { "id":"dist", "type": "int" },
+            { "id":"serv", "type": "int" },
+            { "id": "dst", "type": "int" },
+            { "id":"nsyns", "type": "int" }
+        ]
+    },
+
+    "dimensions": [
+        { "id": "location", "height": 25, "class": [ "geo", "lat", "lon" ],
+            "desc": "Geolocalization of Event" },
+
+        { "id": "cliente", "height": 1, "class": [ "cat", "cliente" ],
+            "desc": "Cliente do POP" }, 
+			
+        { "id": "serv", "height": 1, "class": [ "cat", "serv" ],
+            "desc": "Servico", "map_cat": "services" }
+    ],
+	
+
+    "dimensions_com_pop": [
+        { "id": "location", "height": 25, "class": [ "geo", "lat", "lon" ],
+            "desc": "Geolocalization of Event" },
+
+        { "id": "pop_cliente", "height": 2,
+            "desc": "POP/Cliente",
+            "members": [
+                { "id": "pop", "class": [ "cat", "pop" ]},
+                { "id": "cliente", "class": [ "cat", "cliente" ]}
+            ]
+        }, 
+		
+        { "id": "ttl", "height": 1, "class": [ "cat", "ttl" ],
+            "desc": "TTL" }
+    ],	
+
+    "terminal": {
+        "default": {
+            "caption": "N", "unity":"N"
+        },
+        "contents": [
+            { "id": "quantidades", "formula":["sum", "nsyns" ] },
+            { "id": "time", "container": {
+	            "bin": 60,
+                "class": ["binlist", "seconds"],
+                "contents": [
+                    { "id": "hsum", "caption": "NPackets", "unity":"N.Packets", "formula":["sum", "nsyns" ] },
+                    { "id": "hc",   "caption": "Distintos", "unity":"Distintos", "formula":["counter"] }
+                ] 
+            }}
+        ]
+    },
+	
+    "input": {
+        "type": "csv",
+        "sep": ";",
+        "data": [
+            { "id": "seconds", 
+                "conv": [ "datetime_to_epoch", "seconds", "@format", "@origin" ] 
+            },
+            { "id": "lat" },
+            { "id": "lon" },
+            { "id": "pop" },
+            { "id": "cliente" },
+            { "id": "ttl" },
+			{ "id": "dist"},
+            { "id": "serv"},
+            { "id": "dst"},
+            { "id": "nsyns"}
+        ]
+	}
+}

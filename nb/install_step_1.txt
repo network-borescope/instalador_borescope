@@ -1,0 +1,91 @@
+# 2. Execute 
+cd nb
+
+#
+# Compile tinycubes server
+#
+
+# enter into tinycubes server
+cd tinycubes
+
+# make the sarver
+make
+
+# copy result of make to the final destination
+cp run/tc_server ../bin/
+
+# return to nb directory
+cd ..
+
+
+#begin comment
+<< 'END-OF-COMMENT'
+# 3a. edit file openresty/nginx_to_install.conf and replace the string PARENT_DIR by the value of <parent-dir> where marked
+
+    # must change the string PARENT_DIR below by the value of <parent-dir>
+    init_by_lua_block {
+	    NB_HOMEDIR = "PARENT_DIR/nb";
+    }
+	   
+    # must change the string PARENT_DIR below by the value of <parent-dir>
+    lua_package_path "PARENT_DIR/nb/borescope/?.lua;;";
+    
+    # must change the string PARENT_DIR below by the value of <parent-dir>
+    include PARENT_DIR/nb/openresty/http_servers/*.conf
+
+#3b. save it
+END-OF-COMMENT
+
+# saves the original nginx.conf 
+sudo mv /usr/local/openresty/nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/original_nginx.conf  
+
+# copy ningx_to_install.conf to final place 
+sudo cp openresty/nginx_to_install.conf /usr/local/openresty/nginx/conf/nginx.conf
+
+
+#
+# For each server configuration file "XXXX.conf" inside directory openresty/http_servers, 
+# change, if you want, the default value of the following parameters:
+#
+
+# the external HTTP listen port
+#	listen 8009;                        # external www listen port
+
+#
+# Front-end configuration
+#
+
+# edit the configuration file for the front-end interface
+nano www/assets/config.json
+
+# change the value of backend variable to the appropriate url
+#  "backend": "http://gwrec.cloudnext.rnp.br:60089"
+
+#
+# Activate the Openrest Service
+#
+
+# run at terminal
+sudo systemctl restart openresty.service
+
+#
+# Configure cron to (re)start all stoped servers 
+#
+
+# cron: run at terminal:
+sudo crontab -e
+
+# append the lines below, including BEGIN and END lines, to the CRON file being edited
+#-----------------------[BEGIN]-------------
+* * * * * bash <parent-dir>/nb/cron/check_tinycubes_server.sh
+* * * * * bash <parent-dir>/nb/cron/check_borescope_server.sh
+#-----------------------[END]-------------
+ 
+# save the edited text
+
+
+
+
+
+
+

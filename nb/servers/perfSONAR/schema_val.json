@@ -1,0 +1,159 @@
+{
+    "metadata": {
+        "version": "1.0",
+        "caption": "POP-DF",
+        "geo.anchors": [
+            { "lat":0, "lon":0, "id":"POP-AC" }
+        ]
+    },
+	
+	"const": {
+		"initial_date": 1630454400,
+		"end-date": 1631750400
+	},
+	
+	"metrics": {
+		"failures-atraso-bidir": 10,
+		"histogram-rtt-avg-atraso-bidir": 11,
+		"histogram-rtt-min-atraso-bidir": 12,
+		"histogram-rtt-max-atraso-bidir": 13,
+		"histogram-ttl-reverse-avg-atraso-bidir": 16,
+		"histogram-ttl-reverse-min-atraso-bidir": 17,
+		"histogram-ttl-reverse-max-atraso-bidir": 18,
+		"packet-count-lost-atraso-bidir": 21,
+		"packet-count-sent-atraso-bidir": 22,
+		"packet-duplicates-atraso-bidir": 23,
+		"packet-loss-rate-atraso-bidir": 24,
+		"packet-reorders-atraso-bidir": 25,
+		
+		"failures-banda-bbr": 70,
+		"packet-retransmits-banda-bbr": 71,
+		"packet-retransmits-subintervals-avg-banda-bbr": 72,
+		"packet-retransmits-subintervals-min-banda-bbr": 73,
+		"packet-retransmits-subintervals-max-banda-bbr": 74,
+		"throughput-banda-bbr": 77,
+		"throughput-subintervals-avg-banda-bbr": 78,
+		"throughput-subintervals-min-banda-bbr": 79,
+		"throughput-subintervals-max-banda-bbr": 80
+	},
+
+    "registry": {
+        "seconds/format": "yyyy-mm-dd hh:nn:ss",
+        "seconds/origin": "1970-01-01 00:00:01",
+        "seconds/what": "e",
+        "geo/length": "25"
+    },
+
+    "pops": {
+        "caption": "POPs ",
+        "items": [
+			{ "id": "ac", "cod": 1},
+			{ "id": "al", "cod": 2},
+			{ "id": "am", "cod": 3},
+			{ "id": "ap", "cod": 4},
+			{ "id": "ba", "cod": 5},
+			{ "id": "ce", "cod": 6},
+			{ "id": "df", "cod": 7},
+			{ "id": "es", "cod": 8},
+			{ "id": "go", "cod": 9},
+			{ "id": "ma", "cod": 10},
+			{ "id": "mg", "cod": 11},
+			{ "id": "ms", "cod": 12},
+			{ "id": "mt", "cod": 13},
+			{ "id": "pa", "cod": 14},
+			{ "id": "pb", "cod": 15},
+			{ "id": "pe", "cod": 16},
+			{ "id": "pi", "cod": 17},
+			{ "id": "pr", "cod": 18},
+			{ "id": "rj", "cod": 19},
+			{ "id": "rn", "cod": 20},
+			{ "id": "ro", "cod": 21},
+			{ "id": "rr", "cod": 22},
+			{ "id": "rs", "cod": 23},
+			{ "id": "sc", "cod": 24},
+			{ "id": "se", "cod": 25},
+			{ "id": "sp", "cod": 26},
+			{ "id": "to", "cod": 27}
+		]
+    },
+
+
+    "record": {
+        "fields": [
+            { "id":"seconds", "type": "int" },
+            { "id":"lat", "type": "double" },
+            { "id":"lon", "type": "double" },
+            { "id":"val_0", "type": "double" },
+            { "id":"val_1", "type": "int"},
+            { "id":"src", "type": "int"},
+            { "id":"dst", "type": "int"},
+	    { "id":"metric",  "type":"int"}
+        ]
+    },
+
+    "dimensions": [
+        { "id": "metric",  "height": 1, "class": [ "cat", "metric" ],
+            "desc": "Metric", "map_cat": "metrics" },
+
+        { "id": "src", "height": 1, "class": [ "cat", "src" ],
+            "desc": "Origem da medicao", "map_cat": "pops" }, 
+        { "id": "dst", "height": 1, "class": [ "cat", "dst" ],
+            "desc": "Destino da medicao", "map_cat": "pops" } 
+    ],
+	
+
+    "dimensions_com_pop": [
+        { "id": "location", "height": 25, "class": [ "geo", "lat", "lon" ],
+            "desc": "Geolocalization of Event" },
+
+
+        { "id": "location", "height": 25, "class": [ "geo", "lat", "lon" ],
+            "desc": "Geolocalization of Event" },
+
+        { "id": "pop_cliente", "height": 2,
+            "desc": "POP/Cliente",
+            "members": [
+                { "id": "pop", "class": [ "cat", "pop" ]},
+                { "id": "cliente", "class": [ "cat", "cliente" ]}
+            ]
+        }, 
+		
+        { "id": "ttl", "height": 1, "class": [ "cat", "ttl" ],
+            "desc": "TTL" }
+    ],	
+
+    "terminal": {
+        "default": {
+            "caption": "N", "unity":"N"
+        },
+        "contents": [
+            { "id": "qt_val_1", "formula":["avg", "val_1" ] },
+            { "id": "time", "container": {
+	            "bin": 3600,
+                "class": ["binlist", "seconds"],
+                "contents": [
+                    { "id": "h_val_1", "caption": "Val 1", "unity": "Bytes", "formula": ["avg", "val_1" ] },
+                    { "id": "h_avg", "caption": "Val 1", "unity": "Bytes", "formula": ["avg", "val_1" ] },
+                    { "id": "h_max", "caption": "Min 1", "unity": "Bytes", "formula": ["max", "val_1" ] },
+                    { "id": "h_min", "caption": "Min 1", "unity": "Bytes", "formula": ["min", "val_1" ] }
+                ] 
+            }}
+        ]
+    },
+
+    "input": {
+        "type": "csv",
+        "sep": ";",
+        "data": [
+            { "id": "seconds", 
+                "conv": [ "datetime_to_epoch", "seconds", "@format", "@origin" ] 
+            },
+            { "id": "lat" },
+            { "id": "lon" },
+            { "id": "val_1" },
+            { "id": "src" },
+            { "id": "dst" },
+            { "id": "metric" }
+        ]
+	}
+}

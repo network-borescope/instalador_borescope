@@ -1,0 +1,48 @@
+#
+# Network Borescope mapping template
+#
+server {
+	listen 8009;
+	set $tc_server_address 127.0.0.1;
+	set $tc_server_port    9003;
+
+	server_name localhost;
+	lua_code_cache off;
+	#charset koi8-r; access_log logs/host.access.log main;
+
+        set_by_lua $nb_homedir    'return NB_HOMEDIR';
+
+	location / {
+		#root html; index index.html index.htm;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_pass http://127.0.0.1:$tc_server_port/;
+	}
+
+	location /tc/csv/v1 {
+		#root html; index index.html index.htm;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_pass http://$tc_server_address:$tc_server_port/tc/csv/v1;
+	}
+
+	location /tc/query {
+		resolver 8.8.4.4; # use Google's open DNS server #error_page 404 /404.html;
+		default_type 'text/plain';
+		content_by_lua_file $nb_homedir/borescope/tc_rnp_proxy.lua;
+	}   
+
+	location /tc/app {
+		resolver 8.8.4.4; # use Google's open DNS server #error_page 404 /404.html;
+		default_type 'text/plain'; #
+		content_by_lua_file $nb_homedir/borescope/tc_rnp_appsrv.lua;
+	}
+
+	error_page 500 502 503 504 /50x.html;
+
+	location = /50x.html {
+		root html;
+	}
+}
+
+

@@ -1,0 +1,50 @@
+#
+# install opentresty
+#
+
+# 0 - open a terminal
+
+
+# 1 - execute at terminal
+sudo systemctl disable nginx
+
+# 2 - execute at command line
+sudo systemctl stop nginx
+
+# 3 - execute at command line
+sudo apt-get -y install --no-install-recommends wget gnupg ca-certificates
+
+# 4 - execute at command line
+wget -O - https://openresty.org/package/pubkey.gpg | sudo apt-key add -
+
+# 5 - execute at command line
+echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main"     | sudo tee /etc/apt/sources.list.d/openresty.list
+
+# 6 - execute at terminal
+sudo apt-get update
+
+# 7 - execute at command line
+sudo apt-get -y install openresty
+
+#
+# install development tools and libraries
+#
+
+
+# 8 - install gcc executing at terminal 
+sudo apt install -y gcc
+
+# 9 - install make executing at terminal 
+sudo apt install -y make
+
+# 10 - install libtcmalloc-minimal4 executing at terminal 
+sudo apt install -y libtcmalloc-minimal4
+
+# 11 - install python3 executing at terminal 
+sudo apt install python3.6 -y 
+
+
+
+
+
+
